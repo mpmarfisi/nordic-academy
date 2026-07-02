@@ -1,0 +1,57 @@
+mm@mm-desktop:~/nordic/nordic-academy/sdk_intermediate/l2$ python /home/mm/ncs/v3.3.1/zephyr/scripts/coredump/coredump_serial_log_parser.py dump.log dump.bin
+Input file dump.log
+Output file dump.bin
+Bytes written 6712
+mm@mm-desktop:~/nordic/nordic-academy/sdk_intermediate/l2$ python /home/mm/ncs/v3.3.1/zephyr/scripts/coredump/coredump_gdbserver.py build/l2/zephyr/zephyr.elf dump.bin -v
+[INFO][gdbstub] Log file: dump.bin
+[INFO][gdbstub] ELF file: build/l2/zephyr/zephyr.elf
+[INFO][parser] Reason: (Unknown)
+[INFO][parser] Pointer size 32
+[INFO][parser] Memory: 0x20013000 to 0x200149d8 of size 6616
+[INFO][parser] ELF Section: 0x5a000 to 0x5a47b of size 1148 (text)
+[INFO][parser] ELF Section: 0x5a47c to 0x62d63 of size 35048 (text)
+[INFO][parser] ELF Section: 0x62d6c to 0x62deb of size 128 (read-only data)
+[INFO][parser] ELF Section: 0x62dec to 0x62e77 of size 140 (read-only data)
+[INFO][parser] ELF Section: 0x62e78 to 0x636ef of size 2168 (read-only data)
+[INFO][parser] ELF Section: 0x636f0 to 0x63713 of size 36 (read-only data)
+[INFO][parser] ELF Section: 0x63714 to 0x6372f of size 28 (read-only data)
+[INFO][parser] ELF Section: 0x63730 to 0x6373b of size 12 (read-only data)
+[INFO][parser] ELF Section: 0x6373c to 0x637a3 of size 104 (read-only data)
+[INFO][parser] ELF Section: 0x637a4 to 0x637b3 of size 16 (read-only data)
+[INFO][parser] ELF Section: 0x637b4 to 0x637f7 of size 68 (read-only data)
+[INFO][parser] ELF Section: 0x63800 to 0x6470f of size 3856 (read-only data)
+[INFO][gdbstub] Waiting GDB connection on port 1234...
+[INFO][gdbstub] Accepted GDB connection from ('127.0.0.1', 33094)
+
+mm@mm-desktop:~/nordic/nordic-academy/sdk_intermediate/l2$ /home/mm/ncs/toolchains/911f4c5c26/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb build/l2/zephyr/zephyr.elf 
+GNU gdb (Zephyr SDK 0.17.0) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "--host=x86_64-build_pc-linux-gnu --target=arm-zephyr-eabi".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://github.com/zephyrproject-rtos/sdk-ng/issues>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from build/l2/zephyr/zephyr.elf...
+(gdb) target remote localhost:1234
+Remote debugging using localhost:1234
+crash_function (addr=addr@entry=0x0) at /home/mm/nordic/nordic-academy/sdk_intermediate/l2/src/main.c:30
+30              __asm__ volatile("udf #0" : : : );
+(gdb) bt
+#0  crash_function (addr=addr@entry=0x0) at /home/mm/nordic/nordic-academy/sdk_intermediate/l2/src/main.c:30
+#1  0x0005a7d6 in button_handler (button_state=<optimized out>, has_changed=<optimized out>) at /home/mm/nordic/nordic-academy/sdk_intermediate/l2/src/main.c:42
+#2  0x0005d4a6 in button_handlers_call (button_state=button_state@entry=1, has_changed=1) at /home/mm/ncs/v3.3.1/nrf/lib/dk_buttons_and_leds/dk_buttons_and_leds.c:113
+#3  0x0005d52a in buttons_scan_fn (work=<optimized out>) at /home/mm/ncs/v3.3.1/nrf/lib/dk_buttons_and_leds/dk_buttons_and_leds.c:152
+#4  0x0005ed96 in work_queue_main (workq_ptr=0x20013518 <k_sys_work_q>, p2=<optimized out>, p3=<optimized out>) at /home/mm/ncs/v3.3.1/zephyr/kernel/work.c:737
+#5  0x0005ad1a in z_thread_entry (entry=0x5ed41 <work_queue_main>, p1=0x20013518 <k_sys_work_q>, p2=0x0, p3=0x0) at /home/mm/ncs/v3.3.1/zephyr/lib/os/thread_entry.c:60
+(gdb) 
+
+mm@mm-desktop:~/nordic/nordic-academy/sdk_intermediate/l2$ /home/mm/ncs/toolchains/911f4c5c26/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-addr2line -e build/l2/zephyr/zephyr.elf 0x0005a796
+/home/mm/nordic/nordic-academy/sdk_intermediate/l2/src/main.c:30
