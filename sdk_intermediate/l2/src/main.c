@@ -6,10 +6,9 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <dk_buttons_and_leds.h>
-
 #include <zephyr/debug/coredump.h>
 
+#include <dk_buttons_and_leds.h>
 
 LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 
@@ -39,7 +38,7 @@ void button_handler(uint32_t button_state, uint32_t has_changed)
 		{
             case DK_BTN1_MSK:
                 LOG_INF("Button 1 pressed");
-				crash_function(0);
+				// crash_function(0);
                 break;
 			default:
 				break;
