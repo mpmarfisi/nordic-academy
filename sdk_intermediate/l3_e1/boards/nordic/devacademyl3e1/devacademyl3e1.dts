@@ -1,0 +1,43 @@
+/dts-v1/;
+
+#include <nordic/nrf52833_qiaa.dtsi>
+#include "devacademyl3e1-pinctrl.dtsi"
+
+/ {
+	model = "DevAcademy L3E1";
+	compatible = "nordic,devacademyl3e1";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+	};
+};
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x0 DT_SIZE_K(48)>;
+		};
+
+		slot0_partition: partition@c000 {
+			label = "image-0";
+			reg = <0xc000 DT_SIZE_K(220)>;
+		};
+
+		slot1_partition: partition@43000 {
+			label = "image-1";
+			reg = <0x43000 DT_SIZE_K(220)>;
+		};
+
+		storage_partition: partition@7a000 {
+			label = "storage";
+			reg = <0x7a000 DT_SIZE_K(24)>;
+		};
+	};
+};
