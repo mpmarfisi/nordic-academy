@@ -6,13 +6,13 @@
 
 /dts-v1/;
 #include <nordic/nrf54l15_cpuflpr.dtsi>
-#include "nrf54l15dk_common.dtsi"
+#include "devacademyl3e2_common.dtsi"
 
 /delete-node/ &cpuflpr_sram;
 
 / {
-	model = "Nordic nRF54L15 DK nRF54L15 FLPR MCU";
-	compatible = "nordic,nrf54l15dk_nrf54l15-cpuflpr";
+	model = "Nordic DevAcademyL3E2 nRF54L15 FLPR MCU";
+	compatible = "nordic,devacademyl3e2_nrf54l15-cpuflpr";
 
 	chosen {
 		zephyr,console = &uart30;

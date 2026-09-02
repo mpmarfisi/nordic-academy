@@ -6,7 +6,7 @@
 
 /* This file is common to the secure and non-secure domain */
 
-#include "nrf54l15dk_common.dtsi"
+#include "devacademyl3e2_common.dtsi"
 
 / {
 	chosen {

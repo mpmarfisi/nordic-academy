@@ -10,8 +10,8 @@
 #include "nrf54l_05_10_15_cpuapp_common.dtsi"
 
 / {
-	compatible = "nordic,nrf54l15dk_nrf54l05-cpuapp";
-	model = "Nordic nRF54L15 DK nRF54L05 Application MCU";
+	compatible = "nordic,devacademyl3e2_nrf54l05-cpuapp";
+	model = "Nordic DevAcademyL3E2 nRF54L05 Application MCU";
 
 	chosen {
 		zephyr,code-partition = &slot0_partition;

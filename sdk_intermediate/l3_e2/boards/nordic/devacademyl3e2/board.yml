@@ -1,6 +1,6 @@
 board:
-  name: nrf54l15dk
-  full_name: nRF54L15 DK
+  name: devacademyl3e2
+  full_name: DevAcademyL3E2
   vendor: nordic
   socs:
     - name: nrf54l05
@@ -23,13 +23,13 @@ runners:
         run: first
         groups:
           - boards:
-              - nrf54l15dk/nrf54l05/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuapp
-              - nrf54l15dk/nrf54l15/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuflpr
-              - nrf54l15dk/nrf54l15/cpuflpr/xip
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
     '--erase':
       - runners:
           - nrfjprog
@@ -38,13 +38,13 @@ runners:
         run: first
         groups:
           - boards:
-              - nrf54l15dk/nrf54l05/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuapp
-              - nrf54l15dk/nrf54l15/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuflpr
-              - nrf54l15dk/nrf54l15/cpuflpr/xip
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
     '--reset':
       - runners:
           - nrfjprog
@@ -53,10 +53,10 @@ runners:
         run: last
         groups:
           - boards:
-              - nrf54l15dk/nrf54l05/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp
-              - nrf54l15dk/nrf54l10/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuapp
-              - nrf54l15dk/nrf54l15/cpuapp/ns
-              - nrf54l15dk/nrf54l15/cpuflpr
-              - nrf54l15dk/nrf54l15/cpuflpr/xip
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
