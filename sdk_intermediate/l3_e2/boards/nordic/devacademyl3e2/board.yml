@@ -1,0 +1,62 @@
+board:
+  name: devacademyl3e2
+  full_name: DevAcademyL3E2
+  vendor: nordic
+  socs:
+    - name: nrf54l05
+    - name: nrf54l10
+      variants:
+        - name: ns
+          cpucluster: cpuapp
+    - name: nrf54l15
+      variants:
+        - name: xip
+          cpucluster: cpuflpr
+        - name: ns
+          cpucluster: cpuapp
+runners:
+  run_once:
+    '--recover':
+      - runners:
+          - nrfjprog
+          - nrfutil
+        run: first
+        groups:
+          - boards:
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
+    '--erase':
+      - runners:
+          - nrfjprog
+          - jlink
+          - nrfutil
+        run: first
+        groups:
+          - boards:
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
+    '--reset':
+      - runners:
+          - nrfjprog
+          - jlink
+          - nrfutil
+        run: last
+        groups:
+          - boards:
+              - devacademyl3e2/nrf54l05/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp
+              - devacademyl3e2/nrf54l10/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuapp
+              - devacademyl3e2/nrf54l15/cpuapp/ns
+              - devacademyl3e2/nrf54l15/cpuflpr
+              - devacademyl3e2/nrf54l15/cpuflpr/xip
