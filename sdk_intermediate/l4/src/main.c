@@ -16,13 +16,20 @@ LOG_MODULE_REGISTER(Lesson4_Exercise1, LOG_LEVEL_INF);
 #define PWM_PULSE_WIDTH_INITIAL 2000000
 #define PWM_STEP_NS 			1000000
 
-#define PWM_LED0    DT_ALIAS(pwm_led0)
-#define BUTTON0		DT_ALIAS(sw0)
-#define BUTTON1		DT_ALIAS(sw1)
+#define PWM_LED0    	DT_ALIAS(pwm_led0)
+#define BUTTON0			DT_ALIAS(sw0)
+#define BUTTON1			DT_ALIAS(sw1)
+#define SERVO_MOTOR     DT_NODELABEL(servo) 
 
 static const struct pwm_dt_spec pwm_led0 = PWM_DT_SPEC_GET(PWM_LED0);
+static const struct pwm_dt_spec pwm_servo = PWM_DT_SPEC_GET(SERVO_MOTOR);
 static const struct gpio_dt_spec button0 = GPIO_DT_SPEC_GET(BUTTON0, gpios);
 static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET(BUTTON1, gpios);
+
+#define PWM_SERVO_MIN_PULSE_WIDTH  DT_PROP(SERVO_MOTOR, min_pulse)
+#define PWM_SERVO_MAX_PULSE_WIDTH  DT_PROP(SERVO_MOTOR, max_pulse)
+
+#define PWM_PERIOD   PWM_MSEC(20)
 
 K_EVENT_DEFINE(button_events);
 
@@ -49,6 +56,17 @@ int main(void)
     
 	if (!pwm_is_ready_dt(&pwm_led0)) {
 		LOG_ERR("Error: PWM device %s is not ready\n", pwm_led0.dev->name);
+		return 0;
+	}
+
+	if (!pwm_is_ready_dt(&pwm_servo)) {
+		LOG_ERR("Error: PWM device %s is not ready", pwm_servo.dev->name);
+		return 0;
+	}
+
+	err = pwm_set_dt(&pwm_servo, PWM_PERIOD, PWM_SERVO_MIN_PULSE_WIDTH);
+	if (err) {
+		LOG_ERR("pwm_set_dt returned %d", err);
 		return 0;
 	}
 
