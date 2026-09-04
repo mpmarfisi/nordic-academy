@@ -68,22 +68,16 @@ static int buttons_init(void){
 	int err;
 	const struct gpio_dt_spec * buttons[] = {&button0, &button1, &button2, &button3};	
 
-	for(int i = 0; i < ARRAY_SIZE(buttons); i++) {
+	for(size_t i = 0; i < ARRAY_SIZE(buttons); i++) {
 		if (!gpio_is_ready_dt(buttons[i])) {
 			LOG_ERR("Error: button%d device %s is not ready\n", i, buttons[i]->port->name);
-			return 0;
+			return 1;
 		}
 
 		err = gpio_pin_configure_dt(buttons[i], GPIO_INPUT);
 		if (err) {
 			LOG_ERR("Error in gpio_pin_configure_dt() for button%d, err: %d", i, err);
-			return 0;
-		}
-
-		err = gpio_pin_interrupt_configure_dt(buttons[i], GPIO_INT_EDGE_TO_ACTIVE);
-		if(err) {
-			LOG_ERR("Error in gpio_pin_interrupt_configure_dt() for button%d, err: %d", i, err);
-			return 0;
+			return err;
 		}
 	}
 
@@ -92,7 +86,7 @@ static int buttons_init(void){
 	err = gpio_add_callback(button0.port, &button012_cb_data);
 	if(err) {
 		LOG_ERR("Error in gpio_add_callback() for button012, err: %d", err);
-		return 0;
+		return err;
 	}
 	// err = gpio_add_callback(button1.port, &button012_cb_data); // Port shared with button 0
 	// err = gpio_add_callback(button2.port, &button012_cb_data); // Port shared with button 0
@@ -100,7 +94,15 @@ static int buttons_init(void){
 	err = gpio_add_callback(button3.port, &button3_cb_data);
 	if(err) {
 		LOG_ERR("Error in gpio_add_callback() for button3, err: %d", err);
-		return 0;
+		return err;
+	}
+
+	for(int i = 0; i < ARRAY_SIZE(buttons); i++) {
+		err = gpio_pin_interrupt_configure_dt(buttons[i], GPIO_INT_EDGE_TO_ACTIVE);
+		if (err) {
+			LOG_ERR("Error in gpio_pin_interrupt_configure_dt() for button%d, err: %d", i, err);
+			return err;
+		}
 	}
 
 	return 0;
@@ -138,7 +140,7 @@ int main(void)
 	}
 
 	if (!pwm_is_ready_dt(&pwm_led0)) {
-		LOG_ERR("Error: PWM device %s is not ready\n", pwm_led0.dev->name);
+		LOG_ERR("Error: PWM device %s is not ready", pwm_led0.dev->name);
 		return 0;
 	}
 
