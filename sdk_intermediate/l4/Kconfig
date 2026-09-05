@@ -1,0 +1,12 @@
+source "Kconfig.zephyr"
+
+choice INTER_L1_IPC
+    prompt "Select the IPC mechanism to use"
+    default INTER_L1_MESSAGE_QUEUE
+
+config INTER_L1_FIFO
+    bool "Enable FIFO"
+config INTER_L1_MESSAGE_QUEUE
+    bool "Enable Message Queue"    
+
+endchoice
