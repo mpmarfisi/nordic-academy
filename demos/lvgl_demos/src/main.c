@@ -11,10 +11,40 @@
 #include <lvgl_zephyr.h>
 #include <lv_demos.h>
 #include <stdio.h>
+#include <zephyr/drivers/mipi_dbi.h>
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app);
+
+void patch_display_mirroring(void)
+{
+    const struct device *display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+    
+    if (!device_is_ready(display_dev)) {
+        return;
+    }
+
+    const struct device *dbi_dev = DEVICE_DT_GET(DT_PARENT(DT_NODELABEL(ili9341)));
+
+    if (device_is_ready(dbi_dev)) {
+        /* 
+         * MADCTL (0x36) Bit definitions:
+         * MY(0x80) MX(0x40) MV(0x20) ML(0x10) BGR(0x08) MH(0x04)
+         * Read your driver's default byte or try forcing the flip:
+         * For 90 deg + X-flip, you typically want to toggle the 0x40 or 0x80 bit 
+         * depending on your display's orientation.
+         */
+        uint8_t madctl_val = 0xE0;
+        
+        struct mipi_dbi_config dbi_config =
+            MIPI_DBI_CONFIG_DT(DT_NODELABEL(ili9341),
+                               SPI_OP_MODE_MASTER | SPI_WORD_SET(8), 0);
+
+        // Write directly to MADCTL (0x36) to change hardware X/Y scanning rules
+        mipi_dbi_command_write(dbi_dev, &dbi_config, 0x36, &madctl_val, 1);
+    }
+}
 
 int main(void)
 {
@@ -30,6 +60,8 @@ int main(void)
 		LOG_ERR("Device not ready, aborting test");
 		return 0;
 	}
+
+	patch_display_mirroring();
 
 	lvgl_lock();
 

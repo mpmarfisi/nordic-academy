@@ -33,7 +33,6 @@
 			rotation = <90>;
 
 			status = "okay";
-			disctrl = [0a 02 27 04];
 		};
 	};
 };
