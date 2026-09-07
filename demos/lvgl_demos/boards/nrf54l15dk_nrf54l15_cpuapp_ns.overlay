@@ -1,0 +1,84 @@
+#include <zephyr/dt-bindings/display/panel.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+
+/ {
+	chosen {
+		zephyr,display = &ili9341;
+	};
+
+	mipi_dbi_ili9341 {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&spi21>;
+
+		dc-gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+
+		write-only;
+		status = "okay";
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ili9341: ili9341@0 {
+			compatible = "ilitek,ili9341";
+			reg = <0>;
+
+			mipi-max-frequency = <8000000>;
+			mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+
+			pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>;
+			width = <240>;
+			height = <320>;
+			rotation = <90>;
+
+			status = "okay";
+			disctrl = [0a 02 27 04];
+		};
+	};
+};
+
+&spi21 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+
+	pinctrl-0 = <&spi21_ili9341_default>;
+	pinctrl-1 = <&spi21_ili9341_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	cs-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+};
+
+&pinctrl {
+	spi21_ili9341_default: spi21_ili9341_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  1, 11)>,
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;
+		};
+	};
+
+	spi21_ili9341_sleep: spi21_ili9341_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK,  1, 11)>,
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;
+			low-power-enable;
+		};
+	};
+};
+
+/* Estos GPIO se reutilizan para el display. */
+&button0 {
+	status = "disabled";
+};
+
+&button2 {
+	status = "disabled";
+};
+
+&button3 {
+	status = "disabled";
+};
+
+&led1 {
+	status = "disabled";
+};
