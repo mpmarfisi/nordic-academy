@@ -20,17 +20,25 @@ static void battery_sample_timer_handler(struct k_timer * timer);
 
 K_TIMER_DEFINE(battery_sample_timer, battery_sample_timer_handler, NULL);
 
+static void battery_sample_work_handler(struct k_work *work)
+{
+    int err = nrfx_saadc_mode_trigger();
+    if (err != 0) {
+        printk("nrfx_saadc_mode_trigger error: %08x\n", err);
+        return;
+    }
+
+    int battery_voltage = ((900 * 4) * sample) / (1 << 12);
+
+    printk("SAADC sample: %d\n", sample);
+    printk("Battery Voltage: %d mV\n", battery_voltage);
+}
+
+K_WORK_DEFINE(battery_sample_work, battery_sample_work_handler);
+
 void battery_sample_timer_handler(struct k_timer *timer)
 {
-	int err = nrfx_saadc_mode_trigger();
-	if (err != 0) {
-		printk("nrfx_saadc_mode_trigger error: %08x", err);
-		return;
-	}
-
-	int battery_voltage = ((900*4) * sample) / ((1<<12));
-	printk("SAADC sample: %d\n", sample);
-	printk("Battery Voltage: %d mV\n", battery_voltage);
+    k_work_submit(&battery_sample_work);
 }
 
 static void configure_saadc(void)
