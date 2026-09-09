@@ -1,0 +1,25 @@
+/ {
+	blink_led0: blink-led-0 {
+		compatible = "blink-gpio-led";
+		led-gpios = <&gpio2 9 GPIO_ACTIVE_HIGH>;
+		blink-period-ms = <1000>;
+	};
+
+	blink_led1: blink-led-1 {
+		compatible = "blink-gpio-led";
+		led-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+		blink-period-ms = <1000>;
+	};
+
+	blink_led2: blink-led-2 {
+		compatible = "blink-gpio-led";
+		led-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+		blink-period-ms = <1000>;
+	};
+
+	blink_led3: blink-led-3 {
+		compatible = "blink-gpio-led";
+		led-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;
+		blink-period-ms = <1000>;
+	};
+};
