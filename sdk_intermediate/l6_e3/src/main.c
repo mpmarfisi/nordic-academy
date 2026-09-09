@@ -24,6 +24,48 @@ static nrfx_timer_t timer_instance = NRFX_TIMER_INSTANCE(TIMER_INSTANCE_NUMBER);
 static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
 static uint32_t saadc_current_buffer = 0;
 
+typedef struct {
+	nrf_saadc_value_t *buffer;
+	uint16_t size;
+} saadc_block_t;
+
+K_MSGQ_DEFINE(saadc_done_msgq, sizeof(saadc_block_t), 2, 4);
+
+static void saadc_processing_thread(void *arg1, void *arg2, void *arg3)
+{
+	saadc_block_t block;
+
+	while (true) {
+		k_msgq_get(&saadc_done_msgq, &block, K_FOREVER);
+
+		int64_t average = 0;
+		int16_t max = INT16_MIN;
+		int16_t min = INT16_MAX;
+		int16_t current_value;
+		for (int i = 0; i < block.size; i++) {
+			current_value = block.buffer[i];
+			average += current_value;
+			if (current_value > max) {
+				max = current_value;
+			}
+			if (current_value < min) {
+				min = current_value;
+			}
+		}
+		average = average / block.size;
+
+		LOG_INF("SAADC buffer %p filled with %u samples",
+				block.buffer, block.size);
+		LOG_INF("AVG=%lld, MIN=%d, MAX=%d", average, min, max);
+	}
+}
+
+K_THREAD_DEFINE(saadc_processing_tid,
+			2048,
+			saadc_processing_thread,
+			NULL, NULL, NULL,
+			5, 0, 0);
+
 static void configure_timer(void)
 {
     int err;
@@ -57,26 +99,16 @@ static void saadc_event_handler(nrfx_saadc_evt_t const * p_event)
             break;
 
         case NRFX_SAADC_EVT_DONE:
-			int64_t average = 0;
-			int16_t max = INT16_MIN;
-			int16_t min = INT16_MAX;
-			int16_t current_value;
-			for (int i = 0; i < p_event->data.done.size; i++) {
-				current_value = ((int16_t *)(p_event->data.done.p_buffer))[i];
-				average += current_value;
-				if (current_value > max) {
-					max = current_value;
-				}
-				if (current_value < min) {
-					min = current_value;
-				}
-			}
-			average = average / p_event->data.done.size;
-			LOG_INF("SAADC buffer at 0x%x filled with %d samples", (uint32_t)p_event->data.done.p_buffer,
-				p_event->data.done.size);
-			LOG_INF("AVG=%d, MIN=%d, MAX=%d", (int16_t)average, min, max);
+			saadc_block_t block = {
+				.buffer = p_event->data.done.p_buffer,
+				.size = p_event->data.done.size,
+			};
 
-            break;
+			if (k_msgq_put(&saadc_done_msgq, &block, K_NO_WAIT) != 0) {
+				/* Acquisition faster than processing */
+				// Do something about it, e.g. drop the block, or block until the queue is available
+			}
+			break;
 
         default:
             LOG_INF("Unhandled SAADC evt %d", p_event->type);
