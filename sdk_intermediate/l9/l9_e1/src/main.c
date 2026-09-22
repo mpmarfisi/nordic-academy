@@ -13,7 +13,7 @@ LOG_MODULE_REGISTER(Lesson9_Exercise1, LOG_LEVEL_INF);
 /* 1000 msec = 1 sec */
 
 /* Change LED timing to create a new image for DFU*/
-#define SLEEP_TIME_MS   50
+#define SLEEP_TIME_MS   500
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
