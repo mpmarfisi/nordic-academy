@@ -1,0 +1,9 @@
+/* Add external flash to MCUboot */
+#include "../../../boards/nrf54l15dk_nrf54l15_cpuapp.overlay"
+
+/* Configure bootloader to start from boot_partition  */
+/ {
+    chosen {
+        zephyr,code-partition = &boot_partition;
+    };
+};
